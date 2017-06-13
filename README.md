@@ -18,7 +18,7 @@ devtools::install_github("jsta/learnglm")
 Tutorials
 ---------
 
-Tutorials are presented as a series of vignettes:
+Tutorials are presented as a series of [vignettes](https://jsta.github.io/learnglm/articles/index.html):
 
 | Package  | Topic | Title                                                                                |
 |:---------|:------|:-------------------------------------------------------------------------------------|
