@@ -16,11 +16,13 @@ knitr::opts_chunk$set(echo = TRUE,
 
 <!-- <script src="js/hideOutput.js"></script> -->
 
+Project EDDIE is a series of activities entitled and developed by: 
+
 > Modeling Climate Change Effects on Lakes Using Distributed Computing Module
 This module was initially developed by Carey, C.C., S. Aditya, K. Subratie, and
-R. Figueiredo. 1 May 2016.
+R. Figueiredo. 1 May 2016. [http://cemast.illinoisstate.edu/data-for-students/modules/lake-modeling.shtml](http://cemast.illinoisstate.edu/data-for-students/modules/lake-modeling.shtml) (Module development was supported by NSF DEB 1245707 and ACI 1234983).
 
->	Project EDDIE Module 4, Version 1. [http://cemast.illinoisstate.edu/data-for-students/modules/lake-modeling.shtml](http://cemast.illinoisstate.edu/data-for-students/modules/lake-modeling.shtml) (Module development was supported by NSF DEB 1245707 and ACI 1234983).
+The following tutorial loosely follows the Project EDDIE steps with the exception of using the built-in `run_example_sim` in the `glmtools` package to complete the initial set-up and file handling. The streamlines setup and avoids manual interaction with system files.
 
 ## ACTIVITY A
 ### OBJECTIVE 1: Download the GLM files and R packages successfully onto your computer.
