@@ -69,7 +69,8 @@ dt <- nhd_plus_load(vpu = 7, "NHDSnapshot", "NHDWaterbody")
 spark_outline <- dt[grep("Sparkling", dt$GNIS_NAME),]
 plot(spark_outline$geometry, main = "Sparkling Lake")
 
-library(lakemorpho)
+suppressPackageStartupMessages(library(lakemorpho))
+library(raster)
 # Get length and width
 spark_outline_sp <- as(spark_outline, "Spatial")
 r <- rasterize(spark_outline_sp, raster(spark_outline_sp))
@@ -79,8 +80,7 @@ r <- projectRaster(r, crs = "+proj=utm +zone=10 +datum=WGS84")
 
 spark_lm <- lakeSurroundTopo(spark_outline_sp, r)
 
-calcLakeMetrics(spark_lm, pointDens = 250)
-
+calcLakeMetrics(spark_lm, bearing = 45, pointDens = 250)
 ```
 
 ## Generating from scratch
