@@ -1,7 +1,8 @@
 Package: learnglm
 Title: Resources to Learn the General Lake Model
 Version: 0.0.0.9000
-Authors@R: Joseph Stachelek <stachel2@msu.edu>
+Author: Joseph Stachelek <stachel2@msu.edu>
+Maintainer: Joseph Stachelek <stachel2@msu.edu>
 Description: Resources to Learn the General Lake Model.
 Depends: R (>= 3.4.0)
 License: GPL
@@ -10,3 +11,4 @@ LazyData: true
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+RoxygenNote: 6.0.1
