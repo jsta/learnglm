@@ -1,0 +1,71 @@
+---
+title: "Generating Hypsography"
+author: "Joseph Stachelek"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Generating Hypsography}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+The General Lake Model (GLM) requires information on the depth-area relationship for a given lake. In GLM this is referred to as hypsography (rather than bathymetry) and has the following description in the `glmtools` documentation for `get_hypsography`:  
+
+<br>
+
+```{r echo=FALSE, results='hide', message=FALSE}
+library(glmtools)
+```
+
+```{r echo=FALSE}
+library(printr)
+```
+
+```{r tidy=FALSE, printr.help.sections=c('description'), comment='', echo=FALSE}
+?get_hypsography
+```
+
+----
+
+## Example
+
+Let's start by investigating (reverse-engineering) the hypsography provided for Sparkling Lake (Wisconsin) in the `run_example_sim` function.
+
+```{r }
+sim_folder <- run_example_sim(verbose = FALSE)
+nml_file <- file.path(sim_folder, 'glm2.nml')
+get_hypsography(file = nml_file)
+```
+
+```{r echo=FALSE}
+hp <- get_hypsography(file = nml_file)[,2:1]
+plot(hp, ylim = rev(range(hp[,2])))
+```
+
+### Verify max depth
+
+```{r }
+# Get max depth
+tail(hp, 1)
+```
+
+This value matches the max depth reported by the [Wisconsin DNR](http://dnr.wi.gov/lakes/lakepages/LakeDetail.aspx?wbic=1881900&page=facts).
+
+### Verify dimensions
+
+```{r }
+nml <- read_nml(nml_file)
+get_nml_value(nml, "bsn_len")
+get_nml_value(nml, "bsn_wid")
+```
+
+```{r }
+library(lakemorpho)
+library(nhdR)
+
+
+```
+
+## Generating from scratch
