@@ -1,0 +1,185 @@
+---
+title: "Project EDDIE: Modeling Climate Change Effects on Lakes Using Distributed Computing"
+author: "Joseph Stachelek"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Project EDDIE - Modeling Climate Change Effects on Lakes Using Distributed Computing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.path = "images/")
+```
+
+<!-- <script src="js/hideOutput.js"></script> -->
+
+> Modeling Climate Change Effects on Lakes Using Distributed Computing Module
+This module was initially developed by Carey, C.C., S. Aditya, K. Subratie, and
+R. Figueiredo. 1 May 2016.
+
+>	Project EDDIE Module 4, Version 1. [http://cemast.illinoisstate.edu/data-for-students/modules/lake-modeling.shtml](http://cemast.illinoisstate.edu/data-for-students/modules/lake-modeling.shtml) (Module development was supported by NSF DEB 1245707 and ACI 1234983).
+
+## ACTIVITY A
+### OBJECTIVE 1: Download the GLM files and R packages successfully onto your computer.
+
+#### Install and load packages
+```{r install_packages, eval=FALSE}
+install.packages('sp')
+install.packages('glmtools', repos=c('http://cran.rstudio.com', 'http://owi.usgs.gov/R'))
+```
+ 
+```{r load_packages_silent, message=FALSE, eval=FALSE} 
+library(glmtools)
+```
+
+```{r load_packages, message=FALSE, echo=FALSE} 
+suppressPackageStartupMessages(library(glmtools))
+```
+
+#### Verify setup
+
+```{r check_binary_version, eval=FALSE}
+glm_version()
+```
+
+```{bash print_binary_version, eval=FALSE}
+        ------------------------------------------------
+       |  General Lake Model (GLM)   Version 2.2.0rc5    |
+       ------------------------------------------------
+--help  : show this blurb
+--nml <nmlfile> : get parameters from nmlfile
+--xdisp : display temp/salt and selected others in x-window
+--xdisp <plotsfile> : like --xdisp, but use <plotsfile> instead of plots.nml
+--saveall : save plots to png files
+--save-all-in-one : save all plots to png file
+[1] 0
+```
+
+### OBJECTIVE 2: Migrate the example files that come with your downloaded GLM files onto a new directory on your computer
+
+#### File handling
+
+```{r set_file_paths}
+sim_folder <- "data"
+dir.create(sim_folder, showWarnings = FALSE)  
+run_example_sim(sim_folder)
+
+nml_file <- file.path(sim_folder, "glm2.nml")
+nml <- read_nml(nml_file)
+```
+
+<!-- <div class="fold o"> -->
+```{r }
+print(nml)
+```
+<!-- </div> -->
+
+Get Parameters of the `nml` control file
+
+```{r }
+get_nml_value(nml, 'lake_name')
+```
+
+```{r fig.align="center"}
+plot_meteo(nml_file)
+```
+
+### OBJECTIVE 3: Run the model and look at output
+
+```{r run_glm, eval=FALSE}
+run_glm(sim_folder, verbose=TRUE)
+```
+
+#### Examine model output
+
+```{r }
+nc_file <- file.path("data/output.nc")
+plot_temp(file = nc_file, fig_path = FALSE)
+```
+
+### OBJECTIVE 4: Examine how your modeled GLM data compares to the observed field data for your lake.
+
+```{r }
+field_path <- file.path(sim_folder, 'field_data.csv')
+plot_var_compare(nc_file, field_path, 'temp', resample=FALSE)
+```
+
+#### List and compare available metrics
+
+```{r }
+sim_metrics(with_nml = FALSE)
+compare_to_field(nc_file, field_path, metric="thermo.depth", 
+                 as_value = TRUE, na.rm = TRUE)
+```
+
+#### Plot modeled versus observed metric values
+
+```{r }
+therm_depths <- compare_to_field(nc_file, field_path, 
+                  metric="thermo.depth", as_value = TRUE, na.rm = TRUE)
+
+plot(therm_depths$DateTime, therm_depths$obs, 
+     type = "l", col = "blue", ylim = c(0, 32),
+     ylab="Thermocline depth in meters")
+lines(therm_depths$DateTime, therm_depths$mod, col = "red")
+legend("topright",c("Observed", "Modeled"), lty = c(1, 1), 
+     col = c("blue", "red"))
+```
+
+## ACTIVITY B
+### OBJECTIVE 5: Develop a climate change scenario for your model lake
+
+* Develop a climate scenario (it can be for any region!)
+
+* Create a corresponding meteorological input file. Think through all of the components of the proposed scenario. For example, which of the meteorological variables (air temperature, precipitation, wind, etc.) will be modified and how? Will they be short-term or long-term
+modifications?
+
+* Run the file and examine how it alters the physical structure of the lake.  How does your climate scenario change the thermal structure of the lake? What does the temperature profile look like?  How does the depth of the thermocline change? How does the timing of stratification and magnitude of evaporation change?
+
+* Compare the modeled output to the observed. What are the implications of your climate scenario for future water quality and quantity?
+
+* Create a few figures to highlight the results of your climate scenario. It would be helpful to present both the meteorological input file as well as the lake thermal plots so that you can see how the lake responded to your climate forcing.
+
+#### Modify the `gml2.nml` file
+
+ * change model start and end to '2000-03-01 00:00:00' and '2000-12-31 00:00:00' respecitvely
+
+## ACTIVITY C
+### OBJECTIVE 6: Set up hundreds of GLM simulations with varying input meteorological data
+
+```{r message=FALSE, results='hide', eval=FALSE}
+library(GRAPLEr)
+library(httr)
+library(RCurl)
+library(jsonlite)
+
+# setup file system
+basedir <- "/home/jose/Documents/Science/Models/GLM/EDDIE"
+MyExpRootDir <- file.path(basedir, 'GRAPLE','MyExpRoot') 
+dir.create(MyExpRootDir, showWarnings = FALSE)  
+MyResultsDir <- file.path(basedir, 'GRAPLE','MyResults') 
+dir.create(MyResultsDir, showWarnings = FALSE)
+invisible(file.copy("job_desc.json", MyExpRootDir))
+
+# copy files to Experiment Root Directory
+run_example_sim("GRAPLE/MyExpRoot")
+```
+
+```{r eval=FALSE}
+graplerURL <- "https://graple.acis.ufl.edu"  # specify web service address for the GRAPLEr.
+
+MyExp <- new("Graple", GWSURL=graplerURL, ExpRootDir=MyExpRootDir, ResultsDir=MyResultsDir,
+                ExpName="EDDIE", TempDir = tempdir())
+MyExp <- GrapleCheckService(MyExp)
+```
+
+```{r eval=FALSE}
+MyExp <- GrapleRunSweepExperiment(MyExp)
+print(MyExp@StatusMsg)
+
+MyExp <- GrapleCheckExperimentCompletion(MyExp)
+print(MyExp@StatusMsg)
+```

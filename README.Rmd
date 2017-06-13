@@ -1,0 +1,42 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# learnglm
+
+This repository (`R` package) contains tutorials to learn the General Lake Model (GLM).
+
+## Installation
+
+You can install learnglm from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("jsta/learnglm")
+```
+
+## Tutorials
+
+Tutorials are presented as a series of vignettes:
+
+```{r load printr, echo=FALSE, message=FALSE, results='hide'}
+loadNamespace("printr")
+```
+
+```{r list vignettes, echo=FALSE}
+help.search("*", types = "vignette", package = "learnglm")
+```
+
+```{r unload printr, echo=FALSE}
+unloadNamespace("printr")
+```
