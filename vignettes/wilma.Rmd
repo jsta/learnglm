@@ -1,0 +1,12 @@
+---
+title: "Wilma"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Wilma}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+[Water Integrated Lake Model Aggregation (WILMA)](https://www.sciencebase.gov/catalog/folder/50d35261e4b062c7914ebd14)
