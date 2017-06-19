@@ -50,7 +50,7 @@
       <h1>Generating Hypsography</h1>
                         <h4 class="author">Joseph Stachelek</h4>
             
-            <h4 class="date">2017-06-13</h4>
+            <h4 class="date">2017-06-19</h4>
           </div>
 
     
@@ -86,78 +86,45 @@ Retrieves hypsography information from glm_nml object or file. <br> Hypsography 
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>Let’s start by investigating (reverse-engineering) the hypsography provided for Sparkling Lake (Wisconsin) in the <code>run_example_sim</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim_folder &lt;-<span class="st"> </span><span class="kw">run_example_sim</span>(<span class="dt">verbose =</span> <span class="ot">FALSE</span>)
-nml_file &lt;-<span class="st"> </span><span class="kw">file.path</span>(sim_folder, <span class="st">'glm2.nml'</span>)
-<span class="kw">get_hypsography</span>(<span class="dt">file =</span> nml_file)</code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="right">depths</th>
-<th align="right">areas</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="right">0.000000</td>
-<td align="right">637641.57</td>
-</tr>
-<tr class="even">
-<td align="right">1.306286</td>
-<td align="right">592095.74</td>
-</tr>
-<tr class="odd">
-<td align="right">2.612571</td>
-<td align="right">546549.92</td>
-</tr>
-<tr class="even">
-<td align="right">3.918857</td>
-<td align="right">501004.09</td>
-</tr>
-<tr class="odd">
-<td align="right">5.225143</td>
-<td align="right">455458.26</td>
-</tr>
-<tr class="even">
-<td align="right">6.531429</td>
-<td align="right">409912.44</td>
-</tr>
-<tr class="odd">
-<td align="right">7.837714</td>
-<td align="right">364366.61</td>
-</tr>
-<tr class="even">
-<td align="right">9.144000</td>
-<td align="right">318820.78</td>
-</tr>
-<tr class="odd">
-<td align="right">10.450286</td>
-<td align="right">273274.96</td>
-</tr>
-<tr class="even">
-<td align="right">11.756571</td>
-<td align="right">227729.13</td>
-</tr>
-<tr class="odd">
-<td align="right">13.062857</td>
-<td align="right">182183.31</td>
-</tr>
-<tr class="even">
-<td align="right">14.369143</td>
-<td align="right">136637.48</td>
-</tr>
-<tr class="odd">
-<td align="right">15.675429</td>
-<td align="right">91091.65</td>
-</tr>
-<tr class="even">
-<td align="right">16.981714</td>
-<td align="right">45545.83</td>
-</tr>
-<tr class="odd">
-<td align="right">18.288000</td>
-<td align="right">0.00</td>
-</tr>
-</tbody>
-</table>
-<p><img src="hypsography_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim_folder &lt;-<span class="st"> </span><span class="kw">run_example_sim</span>(<span class="st">"inst/extdata"</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+nml_file &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="st">"inst/extdata"</span>, <span class="st">"glm2.nml"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nml &lt;-<span class="st"> </span><span class="kw">read_nml</span>(nml_file)
+hp &lt;-<span class="st"> </span><span class="kw">get_hypsography</span>(<span class="dt">file =</span> nml_file)[,<span class="dv">2</span><span class="op">:</span><span class="dv">1</span>]</code></pre></div>
+<div id="calculate-volume-from-hypsographic-profile" class="section level3">
+<h3 class="hasAnchor">
+<a href="#calculate-volume-from-hypsographic-profile" class="anchor"></a>Calculate volume from hypsographic profile</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hp_diff &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">c</span>(<span class="kw">diff</span>(hp<span class="op">$</span>depths), <span class="dv">0</span>), hp<span class="op">$</span>areas)
+
+calc_layer_vol &lt;-<span class="st"> </span><span class="cf">function</span>(hp_diff, i){
+  top_area  &lt;-<span class="st"> </span>hp_diff[i, <span class="dv">1</span>] 
+  bot_area  &lt;-<span class="st"> </span>hp_diff[i <span class="op">+</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">2</span>]
+  <span class="co"># volume of a layer approximated as a truncated cone</span>
+  (hp_diff[i, <span class="dv">1</span>] <span class="op">/</span><span class="st"> </span><span class="dv">3</span>) <span class="op">*</span><span class="st"> </span>(top_area <span class="op">+</span><span class="st"> </span>bot_area <span class="op">+</span><span class="st"> </span><span class="kw">sqrt</span>(top_area <span class="op">*</span><span class="st"> </span>bot_area))
+}
+
+vol_layers &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">seq_len</span>(<span class="kw">nrow</span>(hp_diff) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>), 
+                            <span class="cf">function</span>(i) <span class="kw">calc_layer_vol</span>(hp_diff, i))
+(vol_estimated &lt;-<span class="st"> </span><span class="kw">sum</span>(vol_layers))</code></pre></div>
+<pre><code>## [1] 1808205</code></pre>
+</div>
+<div id="approximate-hypsographic-profile-from-max-depth-and-surface-area" class="section level3">
+<h3 class="hasAnchor">
+<a href="#approximate-hypsographic-profile-from-max-depth-and-surface-area" class="anchor"></a>Approximate hypsographic profile from max depth and surface area</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nlayers &lt;-<span class="st"> </span><span class="dv">14</span>
+max_depth &lt;-<span class="st"> </span><span class="fl">18.288000</span>
+surface_area &lt;-<span class="st"> </span><span class="fl">637641.6</span>
+
+res &lt;-<span class="st"> </span><span class="kw">suppressWarnings</span>(
+  glmutils<span class="op">::</span><span class="kw">generate_hypsography</span>(nlayers, max_depth, surface_area))
+
+<span class="kw">plot</span>(res[,<span class="kw">c</span>(<span class="st">"area"</span>, <span class="st">"depth_linear"</span>)],
+     <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="kw">max</span>(res<span class="op">$</span>depth_linear), <span class="kw">min</span>(res<span class="op">$</span>depth_linear)), 
+     <span class="dt">ylab =</span> <span class="st">"depth"</span>)
+<span class="kw">points</span>(res[,<span class="kw">c</span>(<span class="st">"area"</span>, <span class="st">"depth_ellipsoid"</span>)], <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">pch =</span> <span class="dv">19</span>)
+<span class="kw">legend</span>(<span class="st">"topleft"</span>, <span class="dt">legend =</span> <span class="kw">c</span>(<span class="st">"linear"</span>, <span class="st">"ellipsoid"</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">"black"</span>, <span class="st">"red"</span>), 
+        <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">21</span>, <span class="dv">19</span>))</code></pre></div>
+<p><img src="hypsography_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
+</div>
 <div id="verify-max-depth" class="section level3">
 <h3 class="hasAnchor">
 <a href="#verify-max-depth" class="anchor"></a>Verify max depth</h3>
@@ -185,13 +152,11 @@ nml_file &lt;-<span class="st"> </span><span class="kw">file.path</span>(sim_fol
 <pre><code>## [1] 21000</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_nml_value</span>(nml, <span class="st">"bsn_wid"</span>)</code></pre></div>
 <pre><code>## [1] 13000</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(nhdR)</code></pre></div>
-<pre><code>## Loading required package: maps</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get NHD Waterbody Polygons</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(nhdR)
+<span class="co"># Get NHD Waterbody Polygons</span>
 <span class="co"># nhd_plus_get(vpu = 7, "NHDSnapshot")</span>
 dt &lt;-<span class="st"> </span><span class="kw">nhd_plus_load</span>(<span class="dt">vpu =</span> <span class="dv">7</span>, <span class="st">"NHDSnapshot"</span>, <span class="st">"NHDWaterbody"</span>)</code></pre></div>
 <pre><code>## Reading layer `NHDWaterbody' from data source `/home/jose/.local/share/nhdR/NHDPlus/MS_07_NHDSnapshot/NHDWaterbody.shp' using driver `ESRI Shapefile'
-## converted into: POLYGON
 ## Simple feature collection with 42186 features and 12 fields
 ## geometry type:  POLYGON
 ## dimension:      XYZ
@@ -200,7 +165,7 @@ dt &lt;-<span class="st"> </span><span class="kw">nhd_plus_load</span>(<span cla
 ## proj4string:    +proj=longlat +datum=NAD83 +no_defs</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">spark_outline &lt;-<span class="st"> </span>dt[<span class="kw">grep</span>(<span class="st">"Sparkling"</span>, dt<span class="op">$</span>GNIS_NAME),]
 <span class="kw">plot</span>(spark_outline<span class="op">$</span>geometry, <span class="dt">main =</span> <span class="st">"Sparkling Lake"</span>)</code></pre></div>
-<p><img src="hypsography_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
+<p><img src="hypsography_files/figure-html/unnamed-chunk-12-1.png" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>(<span class="kw">library</span>(lakemorpho))
 <span class="kw">library</span>(raster)
 <span class="co"># Get length and width</span>
@@ -232,21 +197,17 @@ spark_lm &lt;-<span class="st"> </span><span class="kw">lakeSurroundTopo</span>(
 ## [1] 0
 ## 
 ## $maxLength
-## [1] 1558.1
+## [1] 1558.539
 ## 
 ## $maxWidth
-## [1] 645.3411
+## [1] 642.285
 ## 
 ## $meanWidth
-## [1] 479.8597
+## [1] 479.7244
 ## 
 ## $fetch
 ## [1] 825.6261</code></pre>
 </div>
-</div>
-<div id="generating-from-scratch" class="section level2">
-<h2 class="hasAnchor">
-<a href="#generating-from-scratch" class="anchor"></a>Generating from scratch</h2>
 </div>
 </div>
   </div>
@@ -257,7 +218,6 @@ spark_lm &lt;-<span class="st"> </span><span class="kw">lakeSurroundTopo</span>(
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
       <li><a href="#example">Example</a></li>
-      <li><a href="#generating-from-scratch">Generating from scratch</a></li>
       </ul>
 </div>
       </div>
