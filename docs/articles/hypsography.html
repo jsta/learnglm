@@ -50,7 +50,7 @@
       <h1>Generating Hypsography</h1>
                         <h4 class="author">Joseph Stachelek</h4>
             
-            <h4 class="date">2017-06-19</h4>
+            <h4 class="date">2017-06-20</h4>
           </div>
 
     
@@ -110,11 +110,13 @@ vol_layers &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span cl
 <div id="approximate-hypsographic-profile-from-max-depth-and-surface-area" class="section level3">
 <h3 class="hasAnchor">
 <a href="#approximate-hypsographic-profile-from-max-depth-and-surface-area" class="anchor"></a>Approximate hypsographic profile from max depth and surface area</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nlayers &lt;-<span class="st"> </span><span class="dv">14</span>
-max_depth &lt;-<span class="st"> </span><span class="fl">18.288000</span>
-surface_area &lt;-<span class="st"> </span><span class="fl">637641.6</span>
-
-res &lt;-<span class="st"> </span><span class="kw">suppressWarnings</span>(
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(nlayers &lt;-<span class="st"> </span><span class="kw">nrow</span>(hp))</code></pre></div>
+<pre><code>## [1] 15</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(max_depth &lt;-<span class="st"> </span><span class="kw">tail</span>(hp<span class="op">$</span>depths, <span class="dv">1</span>))</code></pre></div>
+<pre><code>## [1] 18.288</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(surface_area &lt;-<span class="st"> </span><span class="kw">head</span>(hp<span class="op">$</span>areas, <span class="dv">1</span>))</code></pre></div>
+<pre><code>## [1] 637641.6</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">suppressWarnings</span>(
   glmutils<span class="op">::</span><span class="kw">generate_hypsography</span>(nlayers, max_depth, surface_area))
 
 <span class="kw">plot</span>(res[,<span class="kw">c</span>(<span class="st">"area"</span>, <span class="st">"depth_linear"</span>)],
@@ -147,8 +149,7 @@ res &lt;-<span class="st"> </span><span class="kw">suppressWarnings</span>(
 <div id="verify-dimensions" class="section level3">
 <h3 class="hasAnchor">
 <a href="#verify-dimensions" class="anchor"></a>Verify dimensions</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nml &lt;-<span class="st"> </span><span class="kw">read_nml</span>(nml_file)
-<span class="kw">get_nml_value</span>(nml, <span class="st">"bsn_len"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_nml_value</span>(nml, <span class="st">"bsn_len"</span>)</code></pre></div>
 <pre><code>## [1] 21000</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_nml_value</span>(nml, <span class="st">"bsn_wid"</span>)</code></pre></div>
 <pre><code>## [1] 13000</code></pre>
@@ -165,7 +166,7 @@ dt &lt;-<span class="st"> </span><span class="kw">nhd_plus_load</span>(<span cla
 ## proj4string:    +proj=longlat +datum=NAD83 +no_defs</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">spark_outline &lt;-<span class="st"> </span>dt[<span class="kw">grep</span>(<span class="st">"Sparkling"</span>, dt<span class="op">$</span>GNIS_NAME),]
 <span class="kw">plot</span>(spark_outline<span class="op">$</span>geometry, <span class="dt">main =</span> <span class="st">"Sparkling Lake"</span>)</code></pre></div>
-<p><img src="hypsography_files/figure-html/unnamed-chunk-12-1.png" width="672"></p>
+<p><img src="hypsography_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>(<span class="kw">library</span>(lakemorpho))
 <span class="kw">library</span>(raster)
 <span class="co"># Get length and width</span>
@@ -197,13 +198,13 @@ spark_lm &lt;-<span class="st"> </span><span class="kw">lakeSurroundTopo</span>(
 ## [1] 0
 ## 
 ## $maxLength
-## [1] 1558.539
+## [1] 1556.07
 ## 
 ## $maxWidth
-## [1] 642.285
+## [1] 643.5002
 ## 
 ## $meanWidth
-## [1] 479.7244
+## [1] 480.4857
 ## 
 ## $fetch
 ## [1] 825.6261</code></pre>

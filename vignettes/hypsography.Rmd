@@ -39,7 +39,7 @@ nml_file <- file.path("inst/extdata", "glm2.nml")
 ```
 
 ```{r echo=FALSE}
-nml_file <- file.path("../../inst/extdata", "glm2.nml")
+nml_file <- file.path("../../inst/extdata", "example_sim_sparkling.nml")
 ```
 
 ```{r }
@@ -71,9 +71,9 @@ vol_layers <- sapply(seq_len(nrow(hp_diff) - 1),
 ### Approximate hypsographic profile from max depth and surface area
 
 ```{r }
-nlayers <- 14
-max_depth <- 18.288000
-surface_area <- 637641.6
+(nlayers <- nrow(hp))
+(max_depth <- tail(hp$depths, 1))
+(surface_area <- head(hp$areas, 1))
 
 res <- suppressWarnings(
   glmutils::generate_hypsography(nlayers, max_depth, surface_area))
@@ -98,8 +98,7 @@ This value matches the max depth reported by the [Wisconsin DNR](http://dnr.wi.g
 
 ### Verify dimensions
 
-```{r }
-nml <- read_nml(nml_file)
+```{r verify dimensions}
 get_nml_value(nml, "bsn_len")
 get_nml_value(nml, "bsn_wid")
 ```
