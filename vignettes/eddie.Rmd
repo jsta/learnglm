@@ -152,6 +152,10 @@ modifications?
 ## ACTIVITY C
 ### OBJECTIVE 6: Set up hundreds of GLM simulations with varying input meteorological data
 
+```{r echo=FALSE}
+basedir <- "/home/jose/Documents/Science/Models/GLM/EDDIE"
+```
+
 ```{r message=FALSE, results='hide', eval=FALSE}
 library(GRAPLEr)
 library(httr)
@@ -159,7 +163,7 @@ library(RCurl)
 library(jsonlite)
 
 # setup file system
-basedir <- "/home/jose/Documents/Science/Models/GLM/EDDIE"
+# basedir <- ""
 MyExpRootDir <- file.path(basedir, 'GRAPLE','MyExpRoot') 
 dir.create(MyExpRootDir, showWarnings = FALSE)  
 MyResultsDir <- file.path(basedir, 'GRAPLE','MyResults') 
