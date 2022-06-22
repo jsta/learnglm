@@ -1,4 +1,3 @@
-base
 GLMr
 rLakeAnalyzer
 glmtools
@@ -10,3 +9,4 @@ maptools
 lakemorpho
 raster
 here
+GLM3r

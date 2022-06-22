@@ -1,0 +1,9 @@
+pandoc: '2.12'
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  eddie: eddie.html
+  hypsography: hypsography.html
+  wilma: wilma.html
+last_built: 2022-06-22T20:30Z
+

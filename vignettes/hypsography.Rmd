@@ -39,7 +39,7 @@ nml_file <- file.path("inst/extdata", "glm2.nml")
 ```
 
 ```{r echo=FALSE}
-nml_file <- file.path("../../inst/extdata", "example_sim_sparkling.nml")
+nml_file <- file.path("~/R/scripts/glmtools/inst/extdata", "glm3.nml")
 ```
 
 ```{r }
@@ -103,7 +103,7 @@ get_nml_value(nml, "bsn_len")
 get_nml_value(nml, "bsn_wid")
 ```
 
-```{r cache=TRUE}
+```{r cache=TRUE, eval=FALSE}
 library(nhdR)
 # Get NHD Waterbody Polygons
 # nhd_plus_get(vpu = 7, "NHDSnapshot")
