@@ -1,6 +1,6 @@
 ---
 title: "Project EDDIE: Modeling Climate Change Effects on Lakes Using Distributed Computing"
-author: "Joseph Stachelek"
+author: "Jemma Stachelek"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -85,7 +85,7 @@ Get Parameters of the `nml` control file
 get_nml_value(nml, 'lake_name')
 ```
 
-```{r fig.align="center"}
+```{r fig.align="center", eval=FALSE}
 plot_meteo(nml_file)
 ```
 
@@ -97,7 +97,7 @@ run_glm(sim_folder, verbose=TRUE)
 
 #### Examine model output
 
-```{r }
+```{r, eval=FALSE}
 nc_file <- file.path("data/output.nc")
 plot_temp(file = nc_file, fig_path = FALSE)
 ```
@@ -105,6 +105,7 @@ plot_temp(file = nc_file, fig_path = FALSE)
 ### OBJECTIVE 4: Examine how your modeled GLM data compares to the observed field data for your lake.
 
 ```{r }
+nc_file <- file.path("data/output.nc")
 field_path <- file.path(sim_folder, 'field_data.csv')
 plot_var_compare(nc_file, field_path, 'temp', resample=FALSE)
 ```

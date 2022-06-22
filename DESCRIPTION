@@ -2,9 +2,9 @@ Package: learnglm
 Title: Resources to Learn the General Lake Model
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Joseph", "Stachelek", email = "stachel2@msu.edu", role = c("aut", "cre"))
+    person("Jemma", "Stachelek", email = "stachel2@msu.edu", role = c("aut", "cre"))
     )
-Maintainer: Joseph Stachelek <stachel2@msu.edu>
+Maintainer: Jemma Stachelek <stachel2@msu.edu>
 Description: Resources to Learn the General Lake Model.
 Depends: R (>= 3.4.0)
 License: GPL

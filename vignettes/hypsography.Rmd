@@ -1,6 +1,6 @@
 ---
 title: "Generating Hypsography"
-author: "Joseph Stachelek"
+author: "Jemma Stachelek"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -23,7 +23,7 @@ library(glmtools)
 library(printr)
 ```
 
-```{r tidy=FALSE, printr.help.sections=c('description'), comment='', echo=FALSE}
+```{r tidy=FALSE, printr.help.sections=c('description'), comment='', echo=FALSE, eval=FALSE}
 ?get_hypsography
 ```
 
